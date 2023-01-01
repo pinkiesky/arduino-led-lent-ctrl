@@ -1,6 +1,7 @@
 import { ArduinoProcedure } from "./ArduinoProcedure";
 
 interface IArduinoProcedureSetData {
+  offset: number;
   leds: number[];
 }
 
@@ -10,12 +11,14 @@ export class ArduinoProcedureSet extends ArduinoProcedure<IArduinoProcedureSetDa
   }
 
   getDataBuffer(): Buffer {
-    const { leds } = this.data;
+    const { leds, offset } = this.data;
 
-    const b = Buffer.allocUnsafe(2 + leds.length * 3);
+    const b = Buffer.allocUnsafe(2 + 2 + leds.length * 3);
     let bOffset = 0;
 
-    b.writeInt16LE(leds.length);
+    b.writeInt16BE(offset, bOffset);
+    bOffset += 2;
+    b.writeInt16BE(leds.length, bOffset);
     bOffset += 2;
 
     for (let i = 0; i < leds.length; i++) {

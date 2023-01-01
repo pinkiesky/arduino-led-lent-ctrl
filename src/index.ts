@@ -8,5 +8,4 @@ async function main() {
     baudRate: 9600,
   });
   const as = new ArduinoProcedureCall(serial);
-  const reset = await as.invokeProcedure(new ArduinoProcedureReset({}));
 }
