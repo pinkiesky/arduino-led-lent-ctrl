@@ -1,4 +1,5 @@
 import { IArduinoProcedureInvoker } from '../invoker/IArduinoProcedureInvoker';
+import { ArduinoProcedureApply } from '../procedures/ArduinoProcedureApply';
 import { ArduinoProcedureBrightness } from '../procedures/ArduinoProcedureBrightness';
 import { ArduinoProcedureReset } from '../procedures/ArduinoProcedureReset';
 import { ArduinoProcedureSet } from '../procedures/ArduinoProcedureSet';
@@ -17,7 +18,10 @@ export class ArduinoLed {
   private state: IState;
   private prevState: IState | null = null;
 
-  constructor(private invoker: IArduinoProcedureInvoker, params: IParams) {
+  constructor(
+    private invoker: IArduinoProcedureInvoker,
+    public readonly params: IParams,
+  ) {
     this.state = {
       leds: new Array(params.ledsCount).fill(0),
       bridgtness: 0.5,
@@ -25,15 +29,11 @@ export class ArduinoLed {
   }
 
   async apply(): Promise<void> {
-    const applyPromieses = [];
-
     if (this.state.bridgtness !== this.prevState?.bridgtness) {
-      applyPromieses.push(
-        this.invoker.invokeProcedure(
-          new ArduinoProcedureBrightness({
-            bridgtness: Math.floor(this.state.bridgtness * 255),
-          }),
-        ),
+      this.invoker.invokeProcedure(
+        new ArduinoProcedureBrightness({
+          bridgtness: Math.floor(this.state.bridgtness * 255),
+        }),
       );
       this.setForPrevState('bridgtness', this.state.bridgtness);
     }
@@ -51,8 +51,8 @@ export class ArduinoLed {
             leds: [...this.state.leds.slice(indexOffset, i)],
             offset: indexOffset,
           });
-  
-          applyPromieses.push(this.invoker.invokeProcedure(cmd));
+
+          this.invoker.invokeProcedure(cmd);
           indexOffset = null;
         }
       }
@@ -60,7 +60,9 @@ export class ArduinoLed {
 
     this.setForPrevState('leds', [...this.state.leds]);
 
-    await Promise.all(applyPromieses);
+    this.invoker.invokeProcedure(new ArduinoProcedureApply({}));
+
+    await this.invoker.waitForInvoke();
   }
 
   reset() {
@@ -72,7 +74,8 @@ export class ArduinoLed {
   }
 
   async hardwareReset() {
-    return this.invoker.invokeProcedure(new ArduinoProcedureReset({}));
+    this.invoker.invokeProcedure(new ArduinoProcedureReset({}));
+    await this.invoker.waitForInvoke();
   }
 
   setLed(index: number, value: number) {

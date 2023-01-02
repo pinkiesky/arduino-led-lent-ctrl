@@ -6,8 +6,8 @@ interface IArduinoProcedureSetData {
 }
 
 export class ArduinoProcedureSet extends ArduinoProcedure<IArduinoProcedureSetData> {
-  static getCommand() {
-    return 'r'.charCodeAt(0);
+  getCommand() {
+    return 's'.charCodeAt(0);
   }
 
   getDataBuffer(): Buffer {

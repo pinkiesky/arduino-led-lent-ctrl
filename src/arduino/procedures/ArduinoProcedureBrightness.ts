@@ -5,7 +5,7 @@ interface IArduinoProcedureBrightnessData {
 }
 
 export class ArduinoProcedureBrightness extends ArduinoProcedure<IArduinoProcedureBrightnessData> {
-  static getCommand() {
+  getCommand() {
     return 'b'.charCodeAt(0);
   }
 

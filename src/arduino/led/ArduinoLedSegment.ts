@@ -3,6 +3,9 @@ import { IArduinoLedSegment } from "./types";
 
 export class ArduinoLedSegment implements IArduinoLedSegment {
   constructor(private start: number, private size: number, private led: ArduinoLed) {
+    if (start + size > led.params.ledsCount) {
+      throw new Error('Illegal size for segment');
+    }
   }
 
   resetLeds() {

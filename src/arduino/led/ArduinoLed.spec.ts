@@ -1,7 +1,7 @@
 import { ArduinoLed } from './ArduinoLed';
 
 describe('ArduinoLed', () => {
-  const invoker = { invokeProcedure: jest.fn() };
+  const invoker = { invokeProcedure: jest.fn(), waitForInvoke: jest.fn() };
 
   beforeEach(() => {
     invoker.invokeProcedure.mockReset();

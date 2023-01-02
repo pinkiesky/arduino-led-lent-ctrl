@@ -1,8 +1,8 @@
 import { ArduinoProcedure } from "./ArduinoProcedure";
 
-export class ArduinoProcedureReset extends ArduinoProcedure<{}> {
+export class ArduinoProcedureApply extends ArduinoProcedure<{}> {
   getCommand() {
-    return 'r'.charCodeAt(0);
+    return 'a'.charCodeAt(0);
   }
 
   getDataBuffer(): Buffer {
