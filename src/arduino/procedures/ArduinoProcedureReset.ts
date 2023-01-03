@@ -2,10 +2,10 @@ import { ArduinoProcedure } from "./ArduinoProcedure";
 
 export class ArduinoProcedureReset extends ArduinoProcedure<{}> {
   getCommand() {
-    return 'r'.charCodeAt(0);
+    return 'r';
   }
 
-  getDataBuffer(): Buffer {
-    return Buffer.alloc(0);
+  getDataBuffer(): string {
+    return '';
   }
 }

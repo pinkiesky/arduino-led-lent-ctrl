@@ -3,7 +3,6 @@ import { ArduinoProcedureApply } from '../procedures/ArduinoProcedureApply';
 import { ArduinoProcedureBrightness } from '../procedures/ArduinoProcedureBrightness';
 import { ArduinoProcedureReset } from '../procedures/ArduinoProcedureReset';
 import { ArduinoProcedureSet } from '../procedures/ArduinoProcedureSet';
-import { IArduinoLedSegment } from './types';
 
 interface IState {
   leds: number[];
@@ -16,7 +15,7 @@ interface IParams {
 
 export class ArduinoLed {
   private state: IState;
-  private prevState: IState | null = null;
+  private prevState: IState;
 
   constructor(
     private invoker: IArduinoProcedureInvoker,
@@ -26,33 +25,42 @@ export class ArduinoLed {
       leds: new Array(params.ledsCount).fill(0),
       bridgtness: 0.5,
     };
+    this.prevState = {
+      leds: new Array(params.ledsCount).fill(-1),
+      bridgtness: -1,
+    };
   }
 
   async apply(): Promise<void> {
-    if (this.state.bridgtness !== this.prevState?.bridgtness) {
-      this.invoker.invokeProcedure(
+    let invokedAny = false;
+
+    if (this.state.bridgtness !== this.prevState.bridgtness) {
+      await this.invoker.invokeProcedure(
         new ArduinoProcedureBrightness({
           bridgtness: Math.floor(this.state.bridgtness * 255),
         }),
       );
       this.setForPrevState('bridgtness', this.state.bridgtness);
+      invokedAny = true;
     }
 
     let indexOffset: number | null = null;
     for (let i = 0; i < this.state.leds.length + 1; i++) {
-      const isLedChange = this.state.leds[i] !== this.prevState?.leds[i];
+      const isLedChange = this.state.leds[i] !== this.prevState.leds[i];
       if (isLedChange) {
         if (indexOffset === null) {
           indexOffset = i;
         }
       } else {
         if (indexOffset !== null) {
-          const cmd = new ArduinoProcedureSet({
-            leds: [...this.state.leds.slice(indexOffset, i)],
-            offset: indexOffset,
-          });
+          const procedures = ArduinoProcedureSet.buildFromLeds(indexOffset, [
+            ...this.state.leds.slice(indexOffset, i),
+          ]);
+          for (const p of procedures) {
+            await this.invoker.invokeProcedure(p);
+          }
 
-          this.invoker.invokeProcedure(cmd);
+          invokedAny = true;
           indexOffset = null;
         }
       }
@@ -60,9 +68,9 @@ export class ArduinoLed {
 
     this.setForPrevState('leds', [...this.state.leds]);
 
-    this.invoker.invokeProcedure(new ArduinoProcedureApply({}));
-
-    await this.invoker.waitForInvoke();
+    if (invokedAny) {
+      await this.invoker.invokeProcedure(new ArduinoProcedureApply({}));
+    }
   }
 
   reset() {
@@ -70,12 +78,14 @@ export class ArduinoLed {
       leds: new Array(this.state.leds.length).fill(0),
       bridgtness: 0.5,
     };
-    this.prevState = null;
+    this.prevState = {
+      bridgtness: -1,
+      leds: new Array(this.state.leds.length).fill(-1),
+    };
   }
 
   async hardwareReset() {
-    this.invoker.invokeProcedure(new ArduinoProcedureReset({}));
-    await this.invoker.waitForInvoke();
+    return this.invoker.invokeProcedure(new ArduinoProcedureReset({}));
   }
 
   setLed(index: number, value: number) {
@@ -88,6 +98,12 @@ export class ArduinoLed {
     }
 
     this.state.leds[index] = value;
+  }
+
+  fill(value: number) {
+    for (let i = 0; i < this.state.leds.length; i++) {
+      this.setLed(i, value);
+    }
   }
 
   setBridgtness(value: number) {

@@ -4,15 +4,15 @@ export class ArduinoProcedure<D> {
   constructor(protected readonly data: D) {
   }
 
-  getCommand(): number {
+  getCommand(): string {
     throw new UnimplementedError();
   }
 
-  getSubCommand(): number {
-    return 0;
+  getSubCommand(): string {
+    return '-';
   }
 
-  getDataBuffer(): Buffer {
+  getDataBuffer(): string {
     throw new UnimplementedError();
   }
 }

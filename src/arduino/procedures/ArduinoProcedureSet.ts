@@ -1,4 +1,7 @@
-import { ArduinoProcedure } from "./ArduinoProcedure";
+import { ArduinoProcedure } from './ArduinoProcedure';
+import { chunk } from 'lodash';
+
+const MAX_LED_PER_PROCEDURE = 40;
 
 interface IArduinoProcedureSetData {
   offset: number;
@@ -7,32 +10,23 @@ interface IArduinoProcedureSetData {
 
 export class ArduinoProcedureSet extends ArduinoProcedure<IArduinoProcedureSetData> {
   getCommand() {
-    return 's'.charCodeAt(0);
+    return 's';
   }
 
-  getDataBuffer(): Buffer {
+  getDataBuffer(): string {
     const { leds, offset } = this.data;
+    return `${offset}:${leds.join('')}`;
+  }
 
-    const b = Buffer.allocUnsafe(2 + 2 + leds.length * 3);
-    let bOffset = 0;
-
-    b.writeInt16BE(offset, bOffset);
-    bOffset += 2;
-    b.writeInt16BE(leds.length, bOffset);
-    bOffset += 2;
-
-    for (let i = 0; i < leds.length; i++) {
-      const v = leds[i];
-
-      b.writeUInt8((v & 0xff0000) >> 16, bOffset);
-      bOffset += 1;
-      b.writeUInt8((v & 0x00ff00) >> 8, bOffset);
-      bOffset += 1;
-      b.writeUInt8(v & 0x0000ff, bOffset);
-      bOffset += 1;
-    }
-
-
-    return b;
+  static buildFromLeds(
+    offset: number,
+    leds: number[],
+    chunkSize = MAX_LED_PER_PROCEDURE,
+  ): ArduinoProcedureSet[] {
+    const chunks = chunk(leds, chunkSize);
+    return chunks.map(
+      (l, i) =>
+        new ArduinoProcedureSet({ leds: l, offset: offset + i * chunkSize }),
+    );
   }
 }

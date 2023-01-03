@@ -6,13 +6,10 @@ interface IArduinoProcedureBrightnessData {
 
 export class ArduinoProcedureBrightness extends ArduinoProcedure<IArduinoProcedureBrightnessData> {
   getCommand() {
-    return 'b'.charCodeAt(0);
+    return 'b';
   }
 
-  getDataBuffer(): Buffer {
-    const b = Buffer.allocUnsafe(1);
-    b.writeInt8(this.data.bridgtness);
-
-    return b;
+  getDataBuffer(): string {
+    return this.data.bridgtness.toString();
   }
 }

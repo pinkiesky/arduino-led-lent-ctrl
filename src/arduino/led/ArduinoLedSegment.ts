@@ -1,11 +1,23 @@
-import { ArduinoLed } from "./ArduinoLed";
-import { IArduinoLedSegment } from "./types";
+import { ArduinoLed } from './ArduinoLed';
+import { IArduinoLedSegment } from './types';
 
 export class ArduinoLedSegment implements IArduinoLedSegment {
-  constructor(private start: number, private size: number, private led: ArduinoLed) {
-    if (start + size > led.params.ledsCount) {
+  constructor(
+    public readonly first: number,
+    public readonly size: number,
+    private led: ArduinoLed,
+  ) {
+    if (size <= 0) {
+      throw new Error('Size cannot be zero');
+    }
+
+    if (first + size > led.params.ledsCount) {
       throw new Error('Illegal size for segment');
     }
+  }
+
+  public get last(): number {
+    return this.first + this.size - 1;
   }
 
   resetLeds() {
@@ -17,12 +29,16 @@ export class ArduinoLedSegment implements IArduinoLedSegment {
       throw new Error(`Illegal index value: ${index}`);
     }
 
-    this.led.setLed(index + this.start, value);
+    this.led.setLed(this.first + index, value);
   }
 
   fill(value: number) {
-    for (let i = this.start; i < this.start + this.size; i++) {
+    for (let i = 0; i < this.size; i++) {
       this.setLed(i, value);
     }
+  }
+
+  nextSegment(size: number): IArduinoLedSegment {
+    return new ArduinoLedSegment(this.last + 1, size, this.led);
   }
 }

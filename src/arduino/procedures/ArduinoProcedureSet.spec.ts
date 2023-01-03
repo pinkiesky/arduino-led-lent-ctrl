@@ -2,9 +2,22 @@ import { ArduinoProcedureSet } from './ArduinoProcedureSet';
 
 describe('ArduinoProcedureSet', () => {
   test('getDataBuffer', () => {
-    const c = new ArduinoProcedureSet({ leds: [0x010203, 0xff00ff], offset: 257 });
-    expect(c.getDataBuffer().toJSON().data).toEqual([
-      1, 1, 0, 2, 1, 2, 3, 255, 0, 255,
+    const c = new ArduinoProcedureSet({ leds: [1, 5, 8], offset: 257 });
+    expect(c.getDataBuffer()).toEqual('257:158');
+  });
+
+  test('buildFromLeds', () => {
+    const ps = ArduinoProcedureSet.buildFromLeds(
+      3,
+      [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      2,
+    );
+    expect(ps.map((p) => p.getDataBuffer())).toEqual([
+      '3:12',
+      '5:34',
+      '7:56',
+      '9:78',
+      '11:9',
     ]);
   });
 });

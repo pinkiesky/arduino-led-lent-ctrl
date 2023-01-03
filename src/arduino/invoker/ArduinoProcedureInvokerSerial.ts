@@ -1,39 +1,43 @@
 import { SerialPort } from 'serialport';
-import { DelimiterParser } from '@serialport/parser-delimiter';
+import { ArduinoInputWaiter } from '../input/ArduinoInputWaiter';
 import { ArduinoProcedure } from '../procedures/ArduinoProcedure';
 import { IArduinoProcedureInvoker } from './IArduinoProcedureInvoker';
+import { procedure2buffer } from './utils';
+
+
+const SHORT_MAX_SIZE = 2**16;
 
 export class ArduinoProcedureInvokerSerial implements IArduinoProcedureInvoker {
-  private dataStream: DelimiterParser;
+  private commandId = 0;
+  private sendCount = 0;
+  private start = 0;
 
   constructor(private serial: SerialPort) {
-    this.dataStream = serial.pipe(new DelimiterParser({ delimiter: '\n' }));
-    this.dataStream.on('data', (chunk: Buffer) =>
-      console.info(`[!] Got data from arduino: ${chunk}`),
-    );
+    this.start = Date.now();
+    setInterval(() => {
+      const secPass = (Date.now() - this.start) / 1000;
+      console.log('speed info', (this.sendCount / secPass).toFixed(1), 'bytes/sec');
+      this.sendCount = 0;
+      this.start = Date.now();
+    }, 1000);
   }
 
-  
-
-  waitForInvoke(): Promise<void> {
-    return new Promise((res, rej) =>
-      this.serial.drain((err) => (err ? rej(err) : res())),
-    );
+  async invokeProcedure<R>(proc: ArduinoProcedure<R>): Promise<void> {
+    this.send(procedure2buffer(proc));
   }
 
-  invokeProcedure<R>(proc: ArduinoProcedure<R>) {
-    console.log('[*] Invoke proc', proc);
+  private send(data: Buffer) {
+    if (!data.length) {
+      return;
+    }
 
-    const buffer = Buffer.allocUnsafe(2);
-    buffer.writeInt8(proc.getCommand(), 0);
-    buffer.writeInt8(proc.getSubCommand(), 1);
-
-    this.send(buffer);
-    this.send(proc.getDataBuffer());
-  }
-
-  send(data: unknown) {
     this.serial.write(data);
-    console.info('[*] Send data to buffer', data);
+    this.sendCount += data.length;
+    this.serial.drain();
+  }
+
+  private get nextId(): number {
+    this.commandId = (this.commandId + 1) % SHORT_MAX_SIZE;
+    return this.commandId;
   }
 }

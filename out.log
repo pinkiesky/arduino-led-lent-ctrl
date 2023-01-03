@@ -1,0 +1,126 @@
+[!] Send report (1 sec):  0
+[!] Send report (1 sec):  0
+[!] Got data from arduino: NUM_LEDS: 181
+[!] Got data from arduino: Ready
+[*] Invoke proc ArduinoProcedureBrightness { data: { bridgtness: 127 } }
+[*] Send data [ 98, 0 ]
+[*] Send data [ 127 ]
+[*] Invoke proc ArduinoProcedureSet {
+  data: {
+    leds: [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0,
+      ... 81 more items
+    ],
+    offset: 0
+  }
+}
+[*] Send data [ 115, 0 ]
+[*] Send data [
+  0, 0, 0, 181, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0,   0,
+  ... 447 more items
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  554
+2322980
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 2322980 ], offset: 1 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+   0,   1,  0, 1,
+  35, 114, 36
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 1
+5620603
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 5620603 ], offset: 38 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+   0,  38,   0, 1,
+  85, 195, 123
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 2
+2304869
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 2304869 ], offset: 0 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+   0,  0,   0, 1,
+  35, 43, 101
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 3
+3771549
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 3771549 ], offset: 11 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+   0,  11,   0, 1,
+  57, 140, 157
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 4
+11749731
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 11749731 ], offset: 6 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+    0,  6,  0, 1,
+  179, 73, 99
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 5
+7998887
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 7998887 ], offset: 4 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+    0,  4,   0, 1,
+  122, 13, 167
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 6
+4886934
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 4886934 ], offset: 1 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+   0,   1,   0, 1,
+  74, 145, 150
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
+[!] Send report (1 sec):  11
+c 7
+2913471
+[*] Invoke proc ArduinoProcedureSet { data: { leds: [ 2913471 ], offset: 38 } }
+[*] Send data [ 115, 0 ]
+[*] Send data [
+   0,  38,   0, 1,
+  44, 116, 191
+]
+[*] Invoke proc ArduinoProcedureApply { data: {} }
+[*] Send data [ 97, 0 ]
